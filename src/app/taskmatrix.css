@@ -1,0 +1,20 @@
+.matrix-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .matrix-row {
+    display: flex;
+  }
+  
+  .matrix-cell {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  .header .matrix-cell {
+    font-weight: bold;
+  }
+  
+  
