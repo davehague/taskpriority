@@ -14,8 +14,16 @@
   text-align: center;
   flex: 1;
   min-width: 100px;
+  background-color: cornsilk;
 }
 
+.rowTask {
+  background-color: cadetblue;
+  color: white;
+}
+
+
 .header {
-  font-weight: bold;
+  background-color: cadetblue;
+  color: white;
 }

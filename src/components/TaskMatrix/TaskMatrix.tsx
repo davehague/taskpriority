@@ -36,7 +36,7 @@ const TaskMatrix: React.FC<TaskMatrixProps> = ({
   return (
     <div className={styles.matrixContainer}>
       <div className={styles.matrixRow}>
-        <div className={`${styles.matrixCell} ${styles.header}`}>Task</div>
+        <div className={`${styles.matrixCell} ${styles.header}`}></div>
         {tasks.map((task) => (
           <div
             className={`${styles.matrixCell} ${styles.header}`}
@@ -49,7 +49,7 @@ const TaskMatrix: React.FC<TaskMatrixProps> = ({
       </div>
       {tasks.map((rowTask) => (
         <div className={styles.matrixRow} key={`row-${rowTask.id}`}>
-          <div className={styles.matrixCell}>{rowTask.task_name}</div>
+          <div className={`${styles.matrixCell} ${styles.rowTask}`}>{rowTask.task_name}</div>
           {tasks.map((colTask) => (
             <div
               className={styles.matrixCell}

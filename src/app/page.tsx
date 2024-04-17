@@ -63,7 +63,7 @@ export default function Home() {
 
   return (
     <div>
-      <h1>Tasks</h1>
+      <h2>Tasks</h2>
       <TaskMatrix
         tasks={tasks}
         togglePreference={togglePreference}
