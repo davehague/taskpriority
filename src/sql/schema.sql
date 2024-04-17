@@ -1,0 +1,41 @@
+-- SCHEMA: taskpriority
+
+-- DROP SCHEMA IF EXISTS taskpriority ;
+
+CREATE SCHEMA IF NOT EXISTS taskpriority
+    AUTHORIZATION postgres;
+
+GRANT USAGE ON SCHEMA taskpriority TO anon;
+
+GRANT USAGE ON SCHEMA taskpriority TO authenticated;
+
+GRANT ALL ON SCHEMA taskpriority TO postgres;
+
+GRANT USAGE ON SCHEMA taskpriority TO service_role;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON TABLES TO anon;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON TABLES TO authenticated;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON TABLES TO service_role;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON SEQUENCES TO anon;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON SEQUENCES TO authenticated;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT ALL ON SEQUENCES TO service_role;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT EXECUTE ON FUNCTIONS TO anon;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT EXECUTE ON FUNCTIONS TO authenticated;
+
+ALTER DEFAULT PRIVILEGES FOR ROLE postgres IN SCHEMA taskpriority
+GRANT EXECUTE ON FUNCTIONS TO service_role;

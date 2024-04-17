@@ -1,36 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Introduction
+Got too many tasks and can't decide which one is top priority? Use a pairwise matrix to determine which one you should work on next!  Add tasks, delete tasks, activate or deactivate tasks, and compare tasks to each other.  Summarize which tasks have won the most head-to-head competitions and get to work!
+
+## Technical details
+- This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app). 
+- This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.  
+- It connects to [Supabase](https://supabase.com/) for persistent storage of user preferences.  It also uses a `taskpriority` schema.  Check out more on using schemas in Supabase in [this gist](https://gist.github.com/davehague/5f694889f466d18c5b48fda89ddfc14a).  Schema and table scripts are included in the `sql` folder.
+
+## Get setup
+Create an `.env.local` file with the following contents:
+
+```
+NEXT_PUBLIC_SUPABASE_URL=<your-sb-url>
+NEXT_PUBLIC_SUPABASE_ANON_KEY=<your-sb-anon-key>
+```
 
 ## Getting Started
 
-First, run the development server:
-
+Run the development server:
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
-
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
