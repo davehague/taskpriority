@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { PreferenceType } from "@/types/interfaces";
+import { Task, PreferenceType } from "@/types/interfaces";
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -23,3 +23,30 @@ export const updateSupabasePreference = async (
     console.error("Error updating preference: ", error);
   }
 };
+
+export const getTasks = async () => {
+  const { data, error } = await supabase.from("tasks").select("*");
+
+  if (error) {
+    console.error("Error getting tasks: ", error);
+    return [];
+  }
+
+  return data as Task[];
+}
+
+export const getVersusPreferences = async () => {
+  const { data, error } = await supabase.from("versus").select("*");
+
+  if (error) {
+    console.error("Error getting versus preferences: ", error);
+    return [];
+  }
+
+  const preferences = new Map<string, PreferenceType>();
+  data.forEach((preference: any) => {
+    preferences.set(`${preference.task_id_1}-${preference.task_id_2}`, preference.preference);
+  });
+
+  return preferences as Map<string, PreferenceType>;
+}

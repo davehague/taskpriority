@@ -1,16 +1,14 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase, updateSupabasePreference } from "../supabaseClient";
+import {
+  supabase,
+  updateSupabasePreference,
+  getTasks,
+  getVersusPreferences,
+} from "../supabaseClient";
 import TaskMatrix from "@/components/TaskMatrix/TaskMatrix";
-import { PreferenceType } from "@/types/interfaces";
-
-interface Task {
-  id: number;
-  owner_id: string;
-  task_name: string;
-  is_active: boolean;
-}
+import { Task, PreferenceType } from "@/types/interfaces";
 
 export default function Home() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -19,18 +17,21 @@ export default function Home() {
   );
 
   useEffect(() => {
-    async function loadTasks() {
-      console.log("Loading tasks...");
-      let { data, error } = await supabase.from("tasks").select("*");
+    async function loadData() {
+      console.log("Loading tasks and preferences...");
+      const loadedTasks = await getTasks();
+      const loadedPreferences = await getVersusPreferences();
 
-      if (error) console.log("error", error);
-      else setTasks(data as Task[]);
+      setTasks(loadedTasks);
+      setPreferences(loadedPreferences as Map<string, PreferenceType>);
     }
 
-    loadTasks();
+    loadData();
   }, []);
 
-  const [updatedPreferenceKey, setUpdatedPreferenceKey] = useState<string | null>(null);
+  const [updatedPreferenceKey, setUpdatedPreferenceKey] = useState<
+    string | null
+  >(null);
   const togglePreference = (taskId1: number, taskId2: number) => {
     const key = `${taskId1}-${taskId2}`;
     setPreferences((prevPreferences) => {
@@ -54,7 +55,9 @@ export default function Home() {
 
   useEffect(() => {
     if (updatedPreferenceKey) {
-      const [taskId1, taskId2] = (updatedPreferenceKey as string).split("-").map(Number);
+      const [taskId1, taskId2] = (updatedPreferenceKey as string)
+        .split("-")
+        .map(Number);
       const preference =
         preferences.get(updatedPreferenceKey) || PreferenceType.None;
       updateSupabasePreference(taskId1, taskId2, preference);
