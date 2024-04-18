@@ -12,6 +12,7 @@ interface Task {
 interface TaskMatrixProps {
   tasks: Task[];
   togglePreference: (taskId1: number, taskId2: number) => void;
+  deprioritizeTask: (taskId: number) => void;
   preferences: Map<string, PreferenceType>;
   hoveredTaskName?: string;
 }
@@ -19,6 +20,7 @@ interface TaskMatrixProps {
 const TaskMatrix: React.FC<TaskMatrixProps> = ({
   tasks,
   togglePreference,
+  deprioritizeTask,
   preferences,
   hoveredTaskName,
 }) => {
@@ -89,10 +91,7 @@ const TaskMatrix: React.FC<TaskMatrixProps> = ({
             </div>
           ))}
           <div className={styles.matrixCell}>
-            <button
-              type="button"
-              onClick={() => console.log("Deprioritize", rowTask.task_name)}
-            >
+            <button type="button" onClick={() => deprioritizeTask(rowTask.id)}>
               ↓
             </button>
           </div>

@@ -61,3 +61,21 @@ export const addTask = async (taskName: string) => {
     console.error("Error adding task: ", error);
   }
 };
+
+export const setTaskActive = async (taskId: number, isActive: boolean) => {
+  const { data, error } = await supabase.from("tasks").update({
+    is_active: isActive,
+  }).match({ id: taskId });
+
+  if (error) {
+    console.error("Error setting task active: ", error);
+  }
+};
+
+export const deleteTask = async (taskId: number) => {
+  const { error } = await supabase.from("tasks").delete().match({ id: taskId });
+
+  if (error) {
+    console.error("Error deleting task: ", error);
+  }
+};

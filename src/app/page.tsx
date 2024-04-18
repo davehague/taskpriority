@@ -6,12 +6,15 @@ import {
   getTasks,
   getVersusPreferences,
   addTask,
+  deleteTask,
+  setTaskActive,
 } from "../supabaseClient";
 import TaskMatrix from "@/components/TaskMatrix/TaskMatrix";
 import { Task, PreferenceType } from "@/types/interfaces";
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [activeTasks, setActiveTasks] = useState<Task[]>([]);
+  const [inactiveTasks, setInactiveTasks] = useState<Task[]>([]);
   const [preferences, setPreferences] = useState<Map<string, PreferenceType>>(
     new Map()
   );
@@ -22,7 +25,8 @@ export default function Home() {
       const loadedTasks = await getTasks();
       const loadedPreferences = await getVersusPreferences();
 
-      setTasks(loadedTasks);
+      setActiveTasks(loadedTasks.filter((task) => task.is_active));
+      setInactiveTasks(loadedTasks.filter((task) => !task.is_active));
       setPreferences(loadedPreferences as Map<string, PreferenceType>);
     }
 
@@ -35,7 +39,9 @@ export default function Home() {
     if (newTaskName.trim() !== "") {
       await addTask(newTaskName.trim());
       setNewTaskName("");
-      setTasks(await getTasks());
+      const tasks = await getTasks();
+      setActiveTasks(tasks.filter((task) => task.is_active));
+      setInactiveTasks(tasks.filter((task) => !task.is_active));
     }
   };
 
@@ -87,7 +93,7 @@ export default function Home() {
 
     return Array.from(voteCounts.entries())
       .map(([taskId, count]) => {
-        const task = tasks.find((t) => t.id === taskId);
+        const task = activeTasks.find((t) => t.id === taskId);
         return {
           taskId,
           taskName: task?.task_name,
@@ -102,26 +108,54 @@ export default function Home() {
     undefined
   );
 
+  const deprioritizeTask = async (taskId: number) => {
+    await setTaskActive(taskId, false);
+    const taskToDeprioritize = activeTasks.find((task) => task.id === taskId);
+    if (taskToDeprioritize) {
+      setActiveTasks(activeTasks.filter((task) => task.id !== taskId));
+      setInactiveTasks([...inactiveTasks, taskToDeprioritize]);
+    }
+  };
+
+  const restoreTask = async (taskId: number) => {
+    await setTaskActive(taskId, true);
+    const taskToRestore = inactiveTasks.find((task) => task.id === taskId);
+    if (taskToRestore) {
+      setInactiveTasks(inactiveTasks.filter((task) => task.id !== taskId));
+      setActiveTasks([...activeTasks, taskToRestore]);
+    }
+  };
+
+  const permanentlyDeleteTask = async (taskId: number) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this task?"
+    );
+    if (!confirmDelete) return;
+
+    await deleteTask(taskId);
+    setInactiveTasks(inactiveTasks.filter((task) => task.id !== taskId));
+  };
+
   return (
     <div>
-      <h2>Tasks</h2>
+      <h2>Task Prioritization Matrix</h2>
       <div className="taskInputContainer">
-      <input
-        type="text"
-        placeholder="Enter a task"
-        value={newTaskName}
-        onChange={(e) => setNewTaskName(e.target.value)}
-        className="taskInput"
-      />
-      <button onClick={handleAddTask} className="addButton">
-        Add Task
-      </button>
-    </div>
-
+        <input
+          type="text"
+          placeholder="Enter a task"
+          value={newTaskName}
+          onChange={(e) => setNewTaskName(e.target.value)}
+          className="taskInput"
+        />
+        <button onClick={handleAddTask} className="addButton">
+          Add Task
+        </button>
+      </div>
 
       <TaskMatrix
-        tasks={tasks}
+        tasks={activeTasks.sort((a, b) => a.id - b.id)}
         togglePreference={togglePreference}
+        deprioritizeTask={deprioritizeTask}
         preferences={preferences}
         hoveredTaskName={hoveredTaskName}
       />
@@ -174,6 +208,23 @@ export default function Home() {
             </li>
           </ul>
         </div>
+      </div>
+
+      <div>
+        <h3>Deprioritized Tasks:</h3>
+        <ul className="inactiveTasksList">
+          {inactiveTasks.map((task) => (
+            <li key={task.id}>
+              <span className="taskName">{task.task_name}</span>
+              <span className="buttonGroup">
+                <button onClick={() => restoreTask(task.id)}>↑</button>
+                <button onClick={() => permanentlyDeleteTask(task.id)}>
+                  X
+                </button>
+              </span>
+            </li>
+          ))}
+        </ul>
       </div>
     </div>
   );
