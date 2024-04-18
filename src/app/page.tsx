@@ -64,6 +64,27 @@ export default function Home() {
     }
   }, [updatedPreferenceKey, preferences]);
 
+  const countVotes = () => {
+    const voteCounts = new Map();
+    preferences.forEach((value, key) => {
+      const [taskId1, taskId2] = key.split("-").map(Number);
+      if (value === PreferenceType.Task1) {
+        voteCounts.set(taskId1, (voteCounts.get(taskId1) || 0) + 1);
+      } else if (value === PreferenceType.Task2) {
+        voteCounts.set(taskId2, (voteCounts.get(taskId2) || 0) + 1);
+      }
+    });
+
+    return Array.from(voteCounts.entries())
+      .map(([taskId, count]) => {
+        const task = tasks.find((t) => t.id === taskId);
+        return { taskName: task?.task_name, count };
+      })
+      .sort((a, b) => b.count - a.count);
+  };
+
+  const taskVotes = countVotes();
+
   return (
     <div>
       <h2>Tasks</h2>
@@ -72,6 +93,49 @@ export default function Home() {
         togglePreference={togglePreference}
         preferences={preferences}
       />
+      <div className="listContainer">
+        <div className="results">
+          <h3>Results</h3>
+          <ul>
+            {taskVotes.map(({ taskName, count }) => (
+              <li key={taskName}>{`${taskName}: ${count} votes`}</li>
+            ))}
+          </ul>
+        </div>
+        <div className="guidance">
+          <ul>
+            <li>
+              <strong>Skills and Development:</strong> Which project will help
+              me develop new skills or improve existing ones?
+            </li>
+            <li>
+              <strong>Personal Satisfaction:</strong> Which project will bring
+              me the most personal satisfaction or sense of achievement upon
+              completion?
+            </li>
+            <li>
+              <strong>Impact and ROI:</strong> Evaluate the potential positive
+              outcome and long-term benefits. Which project aligns more with
+              your goals? Considering the effort, which project offers the best
+              ROI or value in the long run?
+            </li>
+            <li>
+              <strong>Priority:</strong> Assess the urgency and deadlines. Which
+              project needs immediate attention due to time constraints or
+              upcoming opportunities?
+            </li>
+            <li>
+              <strong>Resources:</strong> Which project requires fewer resources
+              (time, money, effort) to complete?
+            </li>
+            <li>
+              <strong>Risk Assessment:</strong> Identify potential challenges
+              and assess your readiness to tackle them. Which project presents
+              risks that are manageable and worth taking?
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   );
 }

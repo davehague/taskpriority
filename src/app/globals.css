@@ -1,7 +1,17 @@
-h2 {
+h2, h3 {
   color: #555;
 }
 
 body {
   background-color: aliceblue;
+}
+
+.listContainer {
+  display: flex;
+  justify-content: space-between;
+}
+
+.results,
+.guidance {
+  width: 50%;
 }
