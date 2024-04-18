@@ -13,24 +13,33 @@ interface TaskMatrixProps {
   tasks: Task[];
   togglePreference: (taskId1: number, taskId2: number) => void;
   preferences: Map<string, PreferenceType>;
+  hoveredTaskName?: string;
 }
 
 const TaskMatrix: React.FC<TaskMatrixProps> = ({
   tasks,
   togglePreference,
   preferences,
+  hoveredTaskName,
 }) => {
-  const getPreferenceDisplay = (rowTask: Task, colTask: Task): string => {
+  const getPreferenceDisplay = (
+    rowTask: Task,
+    colTask: Task
+  ): JSX.Element | string => {
     const key = `${rowTask.id}-${colTask.id}`;
     const preference = preferences.get(key);
+    let content = "No Preference";
 
     if (preference === PreferenceType.Task1) {
-      return rowTask.task_name;
+      content = rowTask.task_name;
     } else if (preference === PreferenceType.Task2) {
-      return colTask.task_name;
-    } else {
-      return "No Preference";
+      content = colTask.task_name;
     }
+
+    const isHighlighted = content === hoveredTaskName;
+    return (
+      <div className={isHighlighted ? styles.highlighted : ""}>{content}</div>
+    );
   };
 
   return (
@@ -45,14 +54,22 @@ const TaskMatrix: React.FC<TaskMatrixProps> = ({
             {task.task_name}
           </div>
         ))}
-        <div className={`${styles.matrixCell} ${styles.header}`}>Deprioritize</div>
+        <div className={`${styles.matrixCell} ${styles.header}`}>
+          Deprioritize
+        </div>
       </div>
       {tasks.map((rowTask) => (
         <div className={styles.matrixRow} key={`row-${rowTask.id}`}>
-          <div className={`${styles.matrixCell} ${styles.rowTask}`}>{rowTask.task_name}</div>
+          <div className={`${styles.matrixCell} ${styles.rowTask}`}>
+            {rowTask.task_name}
+          </div>
           {tasks.map((colTask) => (
             <div
-              className={styles.matrixCell}
+              className={`${styles.matrixCell} ${
+                getPreferenceDisplay(rowTask, colTask) === hoveredTaskName
+                  ? styles.highlighted
+                  : ""
+              }`}
               key={`cell-${rowTask.id}-${colTask.id}`}
               onClick={(event) => {
                 event.stopPropagation();
@@ -72,7 +89,8 @@ const TaskMatrix: React.FC<TaskMatrixProps> = ({
             </div>
           ))}
           <div className={styles.matrixCell}>
-            <button type="button"
+            <button
+              type="button"
               onClick={() => console.log("Deprioritize", rowTask.task_name)}
             >
               ↓

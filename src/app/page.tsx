@@ -78,12 +78,17 @@ export default function Home() {
     return Array.from(voteCounts.entries())
       .map(([taskId, count]) => {
         const task = tasks.find((t) => t.id === taskId);
-        return { taskName: task?.task_name, count };
+        return {
+          taskId,
+          taskName: task?.task_name,
+          count,
+        };
       })
       .sort((a, b) => b.count - a.count);
   };
 
   const taskVotes = countVotes();
+  const [hoveredTaskName, setHoveredTaskName] = useState<string | undefined>(undefined);
 
   return (
     <div>
@@ -92,13 +97,21 @@ export default function Home() {
         tasks={tasks}
         togglePreference={togglePreference}
         preferences={preferences}
+        hoveredTaskName={hoveredTaskName}
       />
+
       <div className="listContainer">
         <div className="results">
           <h3>Results</h3>
           <ul>
-            {taskVotes.map(({ taskName, count }) => (
-              <li key={taskName}>{`${taskName}: ${count} votes`}</li>
+            {taskVotes.map(({ taskName, count, taskId }) => (
+              <li
+                key={taskId}
+                onMouseEnter={() => setHoveredTaskName(taskName)}
+                onMouseLeave={() => setHoveredTaskName(undefined)}
+              >
+                {`${taskName}: ${count} votes`}
+              </li>
             ))}
           </ul>
         </div>

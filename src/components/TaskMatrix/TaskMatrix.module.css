@@ -27,3 +27,8 @@
   background-color: cadetblue;
   color: white;
 }
+
+.highlighted {
+  font-weight: bold;
+  color: darkmagenta;
+}
