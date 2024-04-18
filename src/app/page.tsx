@@ -2,10 +2,10 @@
 
 import { useEffect, useState } from "react";
 import {
-  supabase,
   updateSupabasePreference,
   getTasks,
   getVersusPreferences,
+  addTask,
 } from "../supabaseClient";
 import TaskMatrix from "@/components/TaskMatrix/TaskMatrix";
 import { Task, PreferenceType } from "@/types/interfaces";
@@ -28,6 +28,16 @@ export default function Home() {
 
     loadData();
   }, []);
+
+  const [newTaskName, setNewTaskName] = useState("");
+  const handleAddTask = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (newTaskName.trim() !== "") {
+      await addTask(newTaskName.trim());
+      setNewTaskName("");
+      setTasks(await getTasks());
+    }
+  };
 
   const [updatedPreferenceKey, setUpdatedPreferenceKey] = useState<
     string | null
@@ -88,11 +98,27 @@ export default function Home() {
   };
 
   const taskVotes = countVotes();
-  const [hoveredTaskName, setHoveredTaskName] = useState<string | undefined>(undefined);
+  const [hoveredTaskName, setHoveredTaskName] = useState<string | undefined>(
+    undefined
+  );
 
   return (
     <div>
       <h2>Tasks</h2>
+      <div className="taskInputContainer">
+      <input
+        type="text"
+        placeholder="Enter a task"
+        value={newTaskName}
+        onChange={(e) => setNewTaskName(e.target.value)}
+        className="taskInput"
+      />
+      <button onClick={handleAddTask} className="addButton">
+        Add Task
+      </button>
+    </div>
+
+
       <TaskMatrix
         tasks={tasks}
         togglePreference={togglePreference}

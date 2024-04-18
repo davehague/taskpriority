@@ -15,3 +15,37 @@ body {
 .guidance {
   width: 50%;
 }
+
+/* Add task input and button styles */
+.taskInputContainer {
+    display: flex;
+    margin-bottom: 20px;
+  }
+  
+  .taskInput {
+    flex-grow: 1;
+    margin-right: 10px;
+    height: 40px; 
+    padding: 0 10px;
+    font-size: 16px; 
+    border: 1px solid #ccc; 
+    border-radius: 4px; 
+  }
+  
+  .addButton {
+    width: 150px;
+    height: 40px; 
+    padding: 0 20px;
+    background-color: cadetblue; 
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px; 
+    transition: background-color 0.2s; 
+  }
+  
+  .addButton:hover {
+    background-color: rgb(74, 127, 129); 
+  }
+  

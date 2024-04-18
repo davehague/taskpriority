@@ -50,3 +50,14 @@ export const getVersusPreferences = async () => {
 
   return preferences as Map<string, PreferenceType>;
 }
+
+export const addTask = async (taskName: string) => {
+  const { data, error } = await supabase.from("tasks").insert({
+    task_name: taskName,
+    is_active: true,
+  });
+
+  if (error) {
+    console.error("Error adding task: ", error);
+  }
+};
